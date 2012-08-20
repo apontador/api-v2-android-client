@@ -18,6 +18,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -36,6 +38,15 @@ public class ResourceActivity extends Activity {
 		String oauthData = getOauthDataFromClientCredentialsFlow();
 		TextView oauthText = (TextView) findViewById(R.id.oauth_data_details);
 		oauthText.setText("oauth details: " + oauthData);
+		
+		String accessToken = null;
+		try {
+			JSONObject jsonObject = new JSONObject(oauthData);
+			accessToken = jsonObject.getString("access_token");
+			Log.i(ResourceActivity.class.getName(), "access_token: " + accessToken);
+		} catch (JSONException e) {
+			Log.e(ResourceActivity.class.getName(), e.getMessage());
+		}
 
 		TextView resourceText = (TextView) findViewById(R.id.resource_details);
 		resourceText.setText("resource details: ");
