@@ -14,6 +14,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -50,26 +51,46 @@ public class ResourceActivity extends Activity {
 			clientSecret = "secret";
 		}
 		
-		String oauthData = getOAuthData(grantType, clientId, clientSecret, username, password, "http://192.168.3.89:8080/api/oauth/token");
+		String oauthData = getOAuthData(grantType, clientId, clientSecret, username, password, "read", "http://192.168.3.89:8080/api/oauth/token");
 		
 		TextView oauthText = (TextView) findViewById(R.id.oauth_data_details);
-		oauthText.setText("oauth details: " + oauthData);
+		oauthText.setText("oauth details:\n" + oauthData);
 		
 		String accessToken = getAccessToken(oauthData);
-
+		String resourceURI = "http://192.168.3.89:8080/api/places/nottinghill";
+		
+		String resourceData = getResourceData(resourceURI, accessToken);
 		TextView resourceText = (TextView) findViewById(R.id.resource_details);
-		resourceText.setText("resource details: ");
+		resourceText.setText("resource details:\n" + resourceData);
 
+	}
+	
+	public String getResourceData(String resourceURI, String accessToken) {
+		
+		Log.i(ResourceActivity.class.getName(), "GET: " + resourceURI);
+		
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+		HttpGet getRequest = new HttpGet(resourceURI);
+		getRequest.addHeader("accept", "application/json");
+		getRequest.addHeader("authorization", "Bearer " + accessToken);
+ 
+		HttpResponse response = null;
+		try {
+			response = httpClient.execute(getRequest);
+		} catch (Exception e) {
+			Log.e(ResourceActivity.class.getName(), e.getMessage());
+		}
+		
+		return getResponseBody(response);
+		
 	}
 
 
 
 	// just an example, be sure to use it inside an AsyncTask
-	public String getOAuthData(String grantType, String clientId, String clientSecret, String username, String password, String endPoint) {
+	public String getOAuthData(String grantType, String clientId, String clientSecret, String username, String password, String scope, String endPoint) {
 
 		Log.i(ResourceActivity.class.getName(), "Flow: " + grantType);
-		Log.d(ResourceActivity.class.getName(), "username: " + username);
-		Log.d(ResourceActivity.class.getName(), "password: " + password);
 		
 		// Create a new HttpClient and Post Header
 		HttpClient httpclient = new DefaultHttpClient();
@@ -87,6 +108,7 @@ public class ResourceActivity extends Activity {
 			if (grantType.equalsIgnoreCase("password")) {
 				nameValuePairs.add(new BasicNameValuePair("username", username));
 				nameValuePairs.add(new BasicNameValuePair("password", password));
+				nameValuePairs.add(new BasicNameValuePair("scope", scope));
 			}
 			
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
