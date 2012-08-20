@@ -1,8 +1,8 @@
 package com.apontador.api.example;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -23,20 +23,17 @@ public class MainActivity extends Activity implements OnClickListener {
     
 	@Override
 	public void onClick(View v) {
+		Intent i = null;
 		switch (v.getId()) {
 		case R.id.button_passwordflow:
-			
+			i = new Intent(this, PasswordActivity.class);
+			startActivity(i);
 			break;
 		case R.id.button_clientcredentialsflow:
-			
+			i = new Intent(this, ResourceActivity.class);
+			startActivity(i);
 			break;			
 		}
 	}
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_main, menu);
-        return true;
-    }
 
 }

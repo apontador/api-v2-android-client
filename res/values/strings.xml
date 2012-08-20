@@ -7,4 +7,10 @@
     <string name="password_flow_label">Password Flow</string>
     <string name="client_credentials_flow_label">Client-Credentials Flow</string>
 
+    <string name="user_label">User:</string>
+    <string name="sample_user_value">marissa</string>
+    <string name="password_label">Password:</string>
+    <string name="sample_password_value">koala</string>    
+    <string name="submit_label">Submit</string>
+    
 </resources>
