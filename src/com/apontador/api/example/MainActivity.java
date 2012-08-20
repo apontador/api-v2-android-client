@@ -31,6 +31,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.button_clientcredentialsflow:
 			i = new Intent(this, ResourceActivity.class);
+			i.putExtra("grantType", "client_credentials");
 			startActivity(i);
 			break;			
 		}

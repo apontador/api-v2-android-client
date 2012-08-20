@@ -32,46 +32,63 @@ public class ResourceActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-
 		setContentView(R.layout.activity_resource);
-
-		String oauthData = getOauthDataFromClientCredentialsFlow();
+		
+		Bundle extras = getIntent().getExtras();
+		String grantType = extras.getString("grantType");
+		String username  = extras.getString("username");
+		String password  = extras.getString("password");
+		String clientId  = null;
+		String clientSecret = null;
+		
+		//distinct credentials for distinct grantType permissions
+		if (grantType.equalsIgnoreCase("password")) {
+			clientId = "my-trusted-client-with-secret";
+			clientSecret = "somesecret";	
+		} else {
+			clientId = "my-client-with-secret";
+			clientSecret = "secret";
+		}
+		
+		String oauthData = getOAuthData(grantType, clientId, clientSecret, username, password, "http://192.168.3.89:8080/api/oauth/token");
+		
 		TextView oauthText = (TextView) findViewById(R.id.oauth_data_details);
 		oauthText.setText("oauth details: " + oauthData);
 		
-		String accessToken = null;
-		try {
-			JSONObject jsonObject = new JSONObject(oauthData);
-			accessToken = jsonObject.getString("access_token");
-			Log.i(ResourceActivity.class.getName(), "access_token: " + accessToken);
-		} catch (JSONException e) {
-			Log.e(ResourceActivity.class.getName(), e.getMessage());
-		}
+		String accessToken = getAccessToken(oauthData);
 
 		TextView resourceText = (TextView) findViewById(R.id.resource_details);
 		resourceText.setText("resource details: ");
 
 	}
 
-	// just an example, be sure to use it inside an AsyncTask
-	public String getOauthDataFromClientCredentialsFlow() {
 
+
+	// just an example, be sure to use it inside an AsyncTask
+	public String getOAuthData(String grantType, String clientId, String clientSecret, String username, String password, String endPoint) {
+
+		Log.i(ResourceActivity.class.getName(), "Flow: " + grantType);
+		Log.d(ResourceActivity.class.getName(), "username: " + username);
+		Log.d(ResourceActivity.class.getName(), "password: " + password);
+		
 		// Create a new HttpClient and Post Header
 		HttpClient httpclient = new DefaultHttpClient();
-		HttpPost httppost = new HttpPost(
-				"http://192.168.3.89:8080/api/oauth/token");
+		HttpPost httppost = new HttpPost(endPoint);
 		String result = null;
 
 		try {
 
 			// Add your data
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-			nameValuePairs.add(new BasicNameValuePair("client_id",
-					"my-client-with-secret"));
-			nameValuePairs
-					.add(new BasicNameValuePair("client_secret", "secret"));
-			nameValuePairs.add(new BasicNameValuePair("grant_type",
-					"client_credentials"));
+			nameValuePairs.add(new BasicNameValuePair("client_id", clientId));
+			nameValuePairs.add(new BasicNameValuePair("client_secret", clientSecret));
+			nameValuePairs.add(new BasicNameValuePair("grant_type",grantType));
+
+			if (grantType.equalsIgnoreCase("password")) {
+				nameValuePairs.add(new BasicNameValuePair("username", username));
+				nameValuePairs.add(new BasicNameValuePair("password", password));
+			}
+			
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
 			// Execute HTTP Post Request
@@ -158,5 +175,18 @@ public class ResourceActivity extends Activity {
 
 		return charset;
 	}
+	
+	private String getAccessToken(String oauthData) {
+		String accessToken = null;
+		try {
+			JSONObject jsonObject = new JSONObject(oauthData);
+			accessToken = jsonObject.getString("access_token");
+			Log.i(ResourceActivity.class.getName(), "access_token: " + accessToken);
+		} catch (JSONException e) {
+			Log.e(ResourceActivity.class.getName(), e.getMessage());
+		}
+		
+		return accessToken;
+	}	
 
 }

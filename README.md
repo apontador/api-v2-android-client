@@ -1,4 +1,13 @@
-api-v2-android-client
-=====================
+Apontador API: Android Client
+======
 
-Exemplos de acesso a API apontador (V2) na plataforma Android
+Authorization endpoint: 
+http://localhost:8080/api/oauth/authorize
+
+Token endpoint: 
+http://localhost:8080/api/oauth/token
+
+This example uses the OAuth2: Password flow and Client Credentials Flow. 
+If you need a distinct flow, please contact Apontador API support Team. 
+
+NOTE: You MUST use ProGuard (http://proguard.sourceforge.net/) to keep credentials safe.
