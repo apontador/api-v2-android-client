@@ -8,9 +8,9 @@
     <string name="client_credentials_flow_label">Client-Credentials Flow</string>
 
     <string name="user_label">User:</string>
-    <string name="sample_user_value">marissa</string>
+    <string name="sample_user_value">testes@apontador.com</string>
     <string name="password_label">Password:</string>
-    <string name="sample_password_value">koala</string>    
+    <string name="sample_password_value">123456</string>    
     <string name="submit_label">Submit</string>
     
 </resources>
