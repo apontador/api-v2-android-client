@@ -51,13 +51,13 @@ public class ResourceActivity extends Activity {
 			clientSecret = "secret";
 		}
 		
-		String oauthData = getOAuthData(grantType, clientId, clientSecret, username, password, "read", "http://ec2-75-101-246-209.compute-1.amazonaws.com:8080/api/oauth/token");
+		String oauthData = getOAuthData(grantType, clientId, clientSecret, username, password, "read", "http://192.168.100.71:8080/api/oauth/token");
 		
 		TextView oauthText = (TextView) findViewById(R.id.oauth_data_details);
 		oauthText.setText("oauth details:\n" + oauthData);
 		
 		String accessToken = getAccessToken(oauthData);
-		String resourceURI = "http://ec2-75-101-246-209.compute-1.amazonaws.com:8080/api/places/nottinghill";
+		String resourceURI = "http://192.168.100.71:8080/api/places/M25GJ288";
 		
 		String resourceData = getResourceData(resourceURI, accessToken);
 		TextView resourceText = (TextView) findViewById(R.id.resource_details);
